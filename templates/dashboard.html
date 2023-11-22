@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <!-- Ваши стили здесь (если есть) -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Welcome to the Dashboard</h1>
+
+    <h2>Manage Products</h2>
+    <form action="{{ url_for('add_product') }}" method="post">
+        <label for="product_name">Product Name:</label>
+        <input type="text" name="product_name" required>
+        <label for="description">Description:</label>
+        <textarea name="description" required></textarea>
+        <label for="price">Price:</label>
+        <input type="number" name="price" required>
+        <button type="submit">Add Product</button>
+    </form>
+
+    <h2>Manage Supplies</h2>
+    <form action="{{ url_for('add_supply') }}" method="post">
+        <label for="product_id">Product ID:</label>
+        <input type="number" name="product_id" required>
+        <label for="quantity">Quantity:</label>
+        <input type="number" name="quantity" required>
+        <label for="supply_date">Supply Date:</label>
+        <input type="date" name="supply_date" required>
+        <button type="submit">Add Supply</button>
+    </form>
+
+    <!-- Ваш контент здесь -->
+
+    <!-- Пример кнопки для выхода из системы -->
+    <a href="{{ url_for('logout') }}">Logout</a>
+
+    <a href="{{ url_for('index') }}" class="button">Go to Main Page</a>
+    
+    <!-- Ваши скрипты здесь (если есть) -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
