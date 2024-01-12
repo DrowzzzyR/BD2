@@ -173,13 +173,10 @@ def login():
         username = request.form['username']
         password = request.form['password']
 
-        cursor = mysql.connection.cursor()
-        cursor.execute("SELECT * FROM users WHERE username = %s", (username,))
-        user = cursor.fetchone()
-        cursor.close()
+        user = User.query.filter_by(username="admin").first() 
 
-        if user and check_password_hash(user[2], password):  
-            session['user_id'] = user[0]
+        if user and check_password_hash(user.password_hash, password):  
+            session['user_id'] = user.id
             flash('Добро пожаловать, {}'.format(username), 'success')
             return redirect(url_for('dashboard'))
         else:
