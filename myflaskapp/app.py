@@ -77,7 +77,7 @@ from flask import request
 def add_product():
     if request.method == 'POST':
         params= {
-        "product_name": request.form['product_name'],
+        "name": request.form['product_name'],
         "description": request.form['description'],
         "price": request.form['price'],
         }
