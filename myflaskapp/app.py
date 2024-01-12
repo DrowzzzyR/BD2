@@ -76,21 +76,20 @@ from flask import request
 @login_required(role='admin')
 def add_product():
     if request.method == 'POST':
-        product_name = request.form['product_name']
-        description = request.form['description']
-        price = request.form['price']
-
-        cursor = mysql.connection.cursor()
+        params= {
+        "product_name": request.form['product_name'],
+        "description": request.form['description'],
+        "price": request.form['price'],
+        }
         try:
-            cursor.execute("INSERT INTO products (name, description, price) VALUES (%s, %s, %s)",
-                           (product_name, description, price))
-            mysql.connection.commit()
+            product_item = Product(**params)
+            db.session.add(product_item)
+            db.session.commit()
             flash('Product added successfully', 'success')
         except Exception as e:
-            mysql.connection.rollback()
+            db.connection.rollback()
             flash('Error adding product: {}'.format(str(e)), 'danger')
-        finally:
-            cursor.close()
+
 
     return redirect(url_for('dashboard'))
 
