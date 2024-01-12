@@ -23,10 +23,10 @@
     <tbody>
         {% for product in products %}
             <tr>
-                <td>{{ product[0] }}</td>
-                <td>{{ product[1] }}</td>
-                <td>{{ product[2] }}</td>
-                <td>{{ product[3] }}</td>
+                <td>{{ product['id'] }}</td>
+                <td>{{ product['name'] }}</td>
+                <td>{{ product['description'] }}</td>
+                <td>{{ product['price'] }}</td>
             </tr>
         {% endfor %}
     </tbody>
@@ -48,10 +48,10 @@
     <tbody>
         {% for supply in supplies %}
             <tr>
-                <td>{{ supply[0] }}</td>
-                <td>{{ supply[1] }}</td>
-                <td>{{ supply[2] }}</td>
-                <td>{{ supply[3] }}</td>
+                <td>{{ supply['id'] }}</td>
+                <td>{{ supply['product_id'] }}</td>
+                <td>{{ supply['quantity'] }}</td>
+                <td>{{ supply['price'] }}</td>
             </tr>
         {% endfor %}
     </tbody>
