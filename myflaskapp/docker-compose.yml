@@ -1,20 +1,32 @@
-version: '3'
+version: "3"
 services:
-  web:
-    build: .
-    ports:
-      - "5000:5000"
-    depends_on:
-      - mysql
-  mysql:
-    image: mysql:8.0
+  db:
+    image: mysql:8
     environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: myflaskapp
-      MYSQL_USER: flaskuser
-      MYSQL_PASSWORD: flaskpassword
-    ports:
-      - "3306:3306"
+      MYSQL_DATABASE=app
+      MYSQL_ROOT_PASSWORD=password
+      MYSQL_ROOT_HOST=192.168.1.3
     volumes:
-      - ./mysql/my.cnf:/etc/mysql/conf.d/my.cnf
-      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - /home/test/mysql1:/var/lib/mysql
+    networks:
+      network:
+        ipv4_address: 192.168.1.2
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    networks:
+      network:
+        ipv4_address: 192.168.1.3
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+
+networks:
+  network:
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.1.0/24
+          gateway: 192.168.1.1
