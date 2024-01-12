@@ -11,5 +11,5 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone &
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
     pip3 install --no-cache-dir -r requirements.txt
-WORKDIR /project-app/myflaskapp
+WORKDIR /project-apps
 CMD /usr/bin/gunicorn -b 0.0.0.0:80 -w 4 app:app
