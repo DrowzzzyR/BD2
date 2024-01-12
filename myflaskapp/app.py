@@ -17,7 +17,7 @@ app.config['MYSQL_DB'] = DB_CONFIG['database']
 app.config['SECRET_KEY'] = SECRET_KEY
 
 
-app.config['SQLALCHEMY_DATABASE_URI'] =  f'mysql+mysqlconnector://{DB_CONFIG.get("user")}:{DB_CONFIG.get("password")}@std-mysql.ist.mospolytech.ru/{DB_CONFIG.get("database")}'
+app.config['SQLALCHEMY_DATABASE_URI'] =  f'mysql+mysqlconnector://{DB_CONFIG.get("user")}:{DB_CONFIG.get("password")}@192.168.1.2/{DB_CONFIG.get("database")}'
 
 mysql = MySQL(app)
 
