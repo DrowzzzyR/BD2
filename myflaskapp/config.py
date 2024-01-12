@@ -1,9 +1,9 @@
 # Конфигурация базы данных
 DB_CONFIG = {
-    'host': 'std-mysql',
-    'user': 'std_1870_lr2',
-    'password': 'qwertyqq',
-    'database': 'std_1870_lr2',
+    'host': '192.168.1.2',
+    'user': 'root',
+    'password': 'password',
+    'database': 'app',
 }
 
 # Секретный ключ для Flask
