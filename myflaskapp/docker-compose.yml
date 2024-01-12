@@ -19,7 +19,7 @@ services:
       network:
         ipv4_address: 192.168.1.3
     ports:
-      - "8080:80"
+      - "8084:80"
     depends_on:
       - db
 
