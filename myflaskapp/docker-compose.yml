@@ -3,9 +3,9 @@ services:
   db:
     image: mysql:8
     environment:
-      MYSQL_DATABASE=app
-      MYSQL_ROOT_PASSWORD=password
-      MYSQL_ROOT_HOST=192.168.1.3
+      MYSQL_DATABASE: app
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_ROOT_HOST: "192.168.1.3"
     volumes:
       - /home/test/mysql1:/var/lib/mysql
     networks:
