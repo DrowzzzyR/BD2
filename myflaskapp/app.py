@@ -51,10 +51,8 @@ def login_required(role='operator'):
         def decorated_view(*args, **kwargs):
             if 'user_id' in session:
                 user_id = session['user_id']
-                cursor = mysql.connection.cursor()
-                cursor.execute("SELECT role FROM users WHERE id = %s", (user_id,))
-                user_role = cursor.fetchone()[0]
-                cursor.close()
+                user = User.query.filter_by(id=int(user_id)).first()
+                user_role = user.role
                 if user_role == role or user_role == 'admin':
                     return fn(*args, **kwargs)
                 flash('Недостаточно прав для доступа', 'danger')
