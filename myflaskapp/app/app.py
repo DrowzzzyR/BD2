@@ -2,22 +2,15 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 from flask_mysqldb import MySQL
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
-from config import DB_CONFIG, SECRET_KEY
-from config import DB_CONFIG
 from sqlalchemy import MetaData
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 
+
 app = Flask(__name__)
+application = app
 
-app.config['MYSQL_HOST'] = DB_CONFIG['host']
-app.config['MYSQL_USER'] = DB_CONFIG['user']
-app.config['MYSQL_PASSWORD'] = DB_CONFIG['password']
-app.config['MYSQL_DB'] = DB_CONFIG['database']
-app.config['SECRET_KEY'] = SECRET_KEY
-
-
-app.config['SQLALCHEMY_DATABASE_URI'] =  f'mysql+mysqlconnector://{DB_CONFIG.get("user")}:{DB_CONFIG.get("password")}@192.168.1.2/{DB_CONFIG.get("database")}'
+app.config.from_pyfile('config.py')
 
 mysql = MySQL(app)
 
@@ -119,30 +112,11 @@ def add_supply():
 
 @app.route('/products')
 def products():
-    # Подключение к базе данных
-    # cursor = mysql.connection.cursor()
-
-    # # Выполнение запроса к базе данных для объединения данных из таблиц products и supplies
-    # cursor.execute("""
-    #     SELECT p.id, p.name, p.description, p.price, s.id, s.product_id, s.quantity, s.supply_date
-    #     FROM products p
-    #     LEFT JOIN supplies s ON p.id = s.product_id
-    # """)
-    
-    # # Получение результатов запроса
-    # products_data = cursor.fetchall()
-
-    # # Закрытие соединения с базой данных
-    # cursor.close()
-
     products_data = Product.query.all()
     supplies_data = Supply.query.all()
 
     # Передача данных в шаблон и отображение страницы
     return render_template('products.html', products=products_data, supplies=supplies_data)
-
-
-
 
 
 # Регистрация пользователя

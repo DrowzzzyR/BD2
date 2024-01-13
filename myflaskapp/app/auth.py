@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 from flask_mysqldb import MySQL
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
-from config import DB_CONFIG, SECRET_KEY
+from app.config import DB_CONFIG, SECRET_KEY
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")
 
