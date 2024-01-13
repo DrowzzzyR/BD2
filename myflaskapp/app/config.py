@@ -1,4 +1,5 @@
-SQLALCHEMY_DATABASE_URI = 'mysql+mysqlconnector://root:@localhost/db'
+# SQLALCHEMY_DATABASE_URI = 'mysql+mysqlconnector://root:@localhost/db'
+SQLALCHEMY_DATABASE_URI = 'mysql+mysqlconnector://root:password@192.168.1.2/db'
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 SQLALCHEMY_ECHO = True
 

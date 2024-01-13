@@ -12,7 +12,7 @@ application = app
 
 app.config.from_pyfile('config.py')
 
-mysql = MySQL(app)
+# mysql = MySQL(app)
 
 convention = {
     "ix": 'ix_%(column_0_label)s',
