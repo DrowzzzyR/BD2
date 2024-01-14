@@ -7,7 +7,16 @@
 </head>
 <body>
     <h1>Register</h1>
-    <form method="post" action="{{ url_for('register') }}">
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <ul>
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    {% endwith %}
+    <form method="post" action="{{ url_for('auth.register') }}">
         <label for="username">Username:</label>
         <input type="text" name="username" required>
         <label for="password">Password:</label>

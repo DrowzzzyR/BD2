@@ -1,73 +1,109 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session, Blueprint
-# from flask_mysqldb import MySQL
-from werkzeug.security import generate_password_hash, check_password_hash
-from functools import wraps
-# from app.config import DB_CONFIG, SECRET_KEY
+from flask import Blueprint, render_template, redirect, url_for, flash, request, current_app
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user, UserMixin
 from models import *
+from users_policy import UsersPolicy
+from functools import wraps
 
-bp = Blueprint("auth", __name__, url_prefix="/auth")
+# Создается объект "bp" типа Blueprint для модуля "auth" в приложении Flask с именем "name".
+#  При обращении к маршрутам модуля "auth", они будут иметь префикс "/auth".
+bp = Blueprint('auth', __name__, url_prefix='/auth')
 
-# Функция для проверки авторизации пользователя
-def login_required(role='operator'):
-    def wrapper(fn):
-        @wraps(fn)
-        def decorated_view(*args, **kwargs):
-            if 'user_id' in session:
-                user_id = session['user_id']
-                user = User.query.filter_by(id=int(user_id)).first()
-                user_role = user.role
-                if user_role == role or user_role == 'admin':
-                    return fn(*args, **kwargs)
-                flash('Недостаточно прав для доступа', 'danger')
-                return redirect(url_for('login'))
-            flash('Необходима авторизация', 'danger')
-            return redirect(url_for('login'))
-        return decorated_view
-    return wrapper
+# Функция "init_login_manager" создает и настраивает объект "login_manager" класса "LoginManager"
+# для управления аутентификацией пользователей в приложении Flask
+def init_login_manager(app):
+	login_manager = LoginManager()
+	# Создан экземпляр класса
+	login_manager.init_app(app)
+	# Даем приложению знать о существования логин менеджера
+	login_manager.login_view = 'auth.login'
+	login_manager.login_message = 'Для выполнения данного действия необходимо пройти процедуру аутентификации.'
+	login_manager.login_message_category = 'warning'
+	# функция "load_user" будет вызвана при каждой следующей авторизации пользователя,
+	#  чтобы получить информацию о пользователе из базы данных или источника данных
+	login_manager.user_loader(load_user)
 
-# Регистрация пользователя
+
+def load_user(user_id):
+    user = User.query.get(user_id)
+    return user
+
+# Декоратор для проверки прав доступа к страничке, для исбежания повторения кода
+def permission_check(action):
+    def decor(function):
+        @wraps(function)
+        def wrapper(*args, **kwargs):
+            user_id = kwargs.get('user_id')
+            user = None
+            if user_id:
+                user = load_user(user_id)
+            if not current_user.can(action, user):
+                flash('Недостаточно прав для выполнения данного действия.', 'warning')
+                return redirect(url_for('books.main_page'))
+            return function(*args, **kwargs)
+        return wrapper
+    return decor
+
+from werkzeug.security import generate_password_hash
+
 # @bp.route('/register', methods=['GET', 'POST'])
 # def register():
 #     if request.method == 'POST':
-#         username = request.form['username']
-#         password = request.form['password']
-#         role = request.form['role']
-#         hashed_password = generate_password_hash(password, method='pbkdf2:sha256')  # Используем pbkdf2_sha256 для хэширования
-
-#         cursor = mysql.connection.cursor()
-#         cursor.execute("INSERT INTO users (username, password_hash, role) VALUES (%s, %s, %s)",
-#                        (username, hashed_password, role))
-#         mysql.connection.commit()
-#         cursor.close()
-
-#         flash('Регистрация прошла успешно', 'success')
-#         return redirect(url_for('login'))
-
+#         username = request.form.get('username')
+#         password = request.form.get('password')
+#         role = request.form.get('role')
+#         hashed_password = generate_password_hash(password)
+#         try:
+#             user = User(username=username, password_hash=hashed_password, role=role)
+#             db.session.add(user)
+#             db.session.commit()
+#             flash('Регистрация успешно завершена.', 'success')
+#             return redirect(url_for('index'))
+#         except:
+#             db.session.rollback()
+#             flash('Невозможно зарегистрироваться с указанными логином!', 'danger')
+#             return redirect(url_for('auth.register'))
 #     return render_template('register.html')
 
-# Авторизация пользователя
-# @bp.route('/login', methods=['GET', 'POST'])
-# def login():
-#     if request.method == 'POST':
-#         username = request.form['username']
-#         password = request.form['password']
+@bp.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        role = request.form.get('role')
+        
+        user = User(username=username, role=role)
+        user.set_password(password)
+        
+        try:
+            db.session.add(user)
+            db.session.commit()
+            flash('Регистрация успешно завершена.', 'success')
+            return render_template('login.html')
+        except:
+            pass
+            db.session.rollback()
+            flash('Невозможно зарегистрироваться с указанными логином!', 'danger')
+            return redirect(url_for('auth.register'))
+    return render_template('register.html')
 
-#         cursor = mysql.connection.cursor()
-#         cursor.execute("SELECT * FROM users WHERE username = %s", (username,))
-#         user = cursor.fetchone()
-#         cursor.close()
 
-#         if user and check_password_hash(user[2], password):  
-#             session['user_id'] = user[0]
-#             flash('Добро пожаловать, {}'.format(username), 'success')
-#             return redirect(url_for('dashboard'))
-#         else:
-#             flash('Неверные учетные данные', 'danger')
+@bp.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        
+        if username and password:
+            user = User.query.filter_by(username=username).first()
+            if username and user.check_password(password):
+                login_user(user)
+                flash('Вы успешно аутентифицированы.', 'success')
+                return redirect(url_for('index'))
+            flash('Невозможно войти с указанными логином и паролем!', 'danger')
+    return render_template('login.html')
 
-#     return render_template('login.html')
 
-# Выход из системы
-# @bp.route('/logout')
-# def logout():
-#     session.pop('user_id', None)
-#     return redirect(url_for('login'))
+@bp.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
