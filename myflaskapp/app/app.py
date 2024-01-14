@@ -5,7 +5,7 @@ from functools import wraps
 from sqlalchemy import MetaData
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-
+from flask_login import login_user
 
 app = Flask(__name__)
 application = app
@@ -58,12 +58,10 @@ def login_required(role='operator'):
 @app.route('/dashboard')
 @login_required()  # Предполагается, что это эндпоинт, доступный только авторизованным пользователям
 def dashboard():
-    # Ваш код для отображения дашборда
+    # код для отображения дашборда
     return render_template('dashboard.html')
 
-
 from flask import request
-
 
 @app.route('/add_product', methods=['POST'])
 @login_required(role='admin')
@@ -83,9 +81,9 @@ def add_product():
             db.connection.rollback()
             flash('Error adding product: {}'.format(str(e)), 'danger')
 
-
     return redirect(url_for('dashboard'))
 
+from datetime import datetime
 
 @app.route('/add_supply', methods=['POST'])
 @login_required(role='admin')
@@ -93,19 +91,16 @@ def add_supply():
     if request.method == 'POST':
         product_id = request.form['product_id']
         quantity = request.form['quantity']
-        supply_date = request.form['supply_date']
+        supply_date = datetime.strptime(request.form['supply_date'], '%Y-%m-%d')
 
-        cursor = mysql.connection.cursor()
         try:
-            cursor.execute("INSERT INTO supplies (product_id, quantity, supply_date) VALUES (%s, %s, %s)",
-                           (product_id, quantity, supply_date))
-            mysql.connection.commit()
+            supply_item = Supply(product_id=product_id, quantity=quantity, supply_date=supply_date)
+            db.session.add(supply_item)
+            db.session.commit()
             flash('Supply added successfully', 'success')
         except Exception as e:
-            mysql.connection.rollback()
+            db.session.rollback()
             flash('Error adding supply: {}'.format(str(e)), 'danger')
-        finally:
-            cursor.close()
 
     return redirect(url_for('dashboard'))
 
@@ -118,7 +113,6 @@ def products():
     # Передача данных в шаблон и отображение страницы
     return render_template('products.html', products=products_data, supplies=supplies_data)
 
-
 # Регистрация пользователя
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -126,16 +120,17 @@ def register():
         username = request.form['username']
         password = request.form['password']
         role = request.form['role']
-        hashed_password = generate_password_hash(password, method='pbkdf2:sha256')  # Используем pbkdf2_sha256 для хэширования
+        hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
 
-        cursor = mysql.connection.cursor()
-        cursor.execute("INSERT INTO users (username, password_hash, role) VALUES (%s, %s, %s)",
-                       (username, hashed_password, role))
-        mysql.connection.commit()
-        cursor.close()
-
-        flash('Регистрация прошла успешно', 'success')
-        return redirect(url_for('login'))
+        try:
+            user = User(username=username, password_hash=hashed_password, role=role)
+            db.session.add(user)
+            db.session.commit()
+            flash('Регистрация прошла успешно', 'success')
+            return redirect(url_for('login'))
+        except Exception as e:
+            db.session.rollback()
+            flash('Ошибка при регистрации: {}'.format(str(e)), 'danger')
 
     return render_template('register.html')
 
@@ -143,17 +138,16 @@ def register():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
+        username = request.form.get('username')  # Изменено имя переменной на 'username'
+        password = request.form.get('password')
 
-        user = User.query.filter_by(username="admin").first() 
-
-        if user and check_password_hash(user.password_hash, password):  
-            session['user_id'] = user.id
-            flash('Добро пожаловать, {}'.format(username), 'success')
-            return redirect(url_for('dashboard'))
-        else:
-            flash('Неверные учетные данные', 'danger')
+        if username and password:
+            user = User.query.filter_by(username=username).first()  # Изменено имя переменной на 'username'
+            if user and user.check_password(password):
+                login_user(user)
+                flash('Вы успешно аутентифицированы.', 'success')
+                return redirect(url_for('index'))
+        flash('Неверные учетные данные', 'danger')
 
     return render_template('login.html')
 
@@ -162,8 +156,6 @@ def login():
 def logout():
     session.pop('user_id', None)
     return redirect(url_for('login'))
-
-
 
 if __name__ == '__main__':
     app.run(debug=True)
