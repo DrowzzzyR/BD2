@@ -12,7 +12,7 @@ def auth(driver):
 
 def login(driver):
     try:
-        driver.get("http://127.0.0.1:5000/auth/login")
+        driver.get("http://192.168.1.2:8000/auth/login")
         input_username = WebDriverWait(driver, 10).until(
             EC.visibility_of_element_located((By.XPATH, "/html/body/form/input[1]"))
         )

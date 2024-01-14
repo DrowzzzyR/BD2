@@ -37,7 +37,7 @@ def product_and_supply_create(driver):
         wait = WebDriverWait(driver, 10)
         li_element = wait.until(EC.visibility_of_element_located((By.XPATH, "/html/body/ul/li")))
         if "Product added successfully" in li_element.text:
-            driver.get("http://127.0.0.1:5000/dashboard")
+            driver.get("http://192.168.1.2:8000/dashboard")
             input_Product_ID = driver.find_element(By.XPATH, "/html/body/form[2]/input[1]")
             input_quantity = driver.find_element(By.XPATH, "/html/body/form[2]/input[2]")
             input_Product_ID.send_keys(data['Product_ID'])

@@ -9,7 +9,7 @@ def register(driver):
 
 def register(driver):
     try:
-        driver.get("http://127.0.0.1:5000/auth/register")
+        driver.get("http://192.168.1.2:8000/auth/register")
         input_username = WebDriverWait(driver, 10).until(
             EC.visibility_of_element_located((By.XPATH, "/html/body/form/input[1]"))
         )
