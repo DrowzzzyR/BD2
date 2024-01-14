@@ -24,6 +24,7 @@ class Supply(db.Model):
     product_id = db.Column(db.Integer, db.ForeignKey("products.id"), default=None)
     quantity = db.Column(db.Integer, nullable=False)
     price = db.Column(db.Date, nullable=False)
+    description = db.Column(db.String(100))
 
     product = db.relationship('Product', backref=db.backref('supplies', cascade='all, delete-orphan', single_parent=True))
 

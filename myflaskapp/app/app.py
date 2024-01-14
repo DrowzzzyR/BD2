@@ -100,9 +100,10 @@ def add_supply():
         product_id = request.form['product_id']
         quantity = request.form['quantity']
         supply_date = request.form['supply_date']
+        supply_description = request.form.get('supply_description')
 
         try:
-            supply_item = Supply(product_id=product_id, quantity=quantity, price=supply_date)
+            supply_item = Supply(product_id=product_id, quantity=quantity, price=supply_date, description=supply_description)
             db.session.add(supply_item)
             db.session.commit()
             flash('Supply added successfully', 'success')

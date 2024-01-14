@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: localhost
--- Время создания: Янв 14 2024 г., 13:31
+-- Время создания: Янв 14 2024 г., 14:12
 -- Версия сервера: 8.2.0
 -- Версия PHP: 8.3.1
 
@@ -38,7 +38,7 @@ CREATE TABLE `alembic_version` (
 --
 
 INSERT INTO `alembic_version` (`version_num`) VALUES
-('3025af974662');
+('993610c5fca0');
 
 -- --------------------------------------------------------
 
@@ -60,7 +60,9 @@ CREATE TABLE `products` (
 INSERT INTO `products` (`id`, `name`, `description`, `price`) VALUES
 (1, 'product', '123', 123),
 (2, 'product123', '456', 789),
-(3, 'product12', '12', 12);
+(3, 'product12', '12', 12),
+(4, '321', '321', 321),
+(5, '5', '5', 5);
 
 -- --------------------------------------------------------
 
@@ -72,18 +74,23 @@ CREATE TABLE `supplies` (
   `id` int NOT NULL,
   `product_id` int DEFAULT NULL,
   `quantity` int NOT NULL,
-  `price` date NOT NULL
+  `price` date NOT NULL,
+  `description` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Дамп данных таблицы `supplies`
 --
 
-INSERT INTO `supplies` (`id`, `product_id`, `quantity`, `price`) VALUES
-(1, 1, 123, '2024-01-03'),
-(2, 2, 6000, '2024-01-13'),
-(3, 2, 5000, '2024-01-04'),
-(4, 3, 1000000, '2024-01-05');
+INSERT INTO `supplies` (`id`, `product_id`, `quantity`, `price`, `description`) VALUES
+(1, 1, 123, '2024-01-03', NULL),
+(2, 2, 6000, '2024-01-13', NULL),
+(3, 2, 5000, '2024-01-04', NULL),
+(4, 3, 1000000, '2024-01-05', NULL),
+(5, 4, 321, '2024-01-13', NULL),
+(7, 5, 5, '0005-05-05', NULL),
+(8, 5, 123123, '2322-03-12', '123gh123'),
+(9, 5, 123123, '2222-03-12', '123231213');
 
 -- --------------------------------------------------------
 
@@ -108,7 +115,8 @@ INSERT INTO `users` (`id`, `username`, `password_hash`, `role`) VALUES
 (10, 'admin1', 'pbkdf2:sha256:260000$uzGYeURCoTrFWoTk$49a52baedec5a0d81e58f656f93b4141c2df550b61a7a7e541862ccb5d6f38f9', 'admin'),
 (11, 'admin1w2', 'pbkdf2:sha256:260000$svDCj1advJJK4lpz$fba0859a55a14c832a62682b07720ca007f990c6f2073ef4f3b83205ebc033a0', 'admin'),
 (12, '1233453521152', 'pbkdf2:sha256:260000$tXm9hexAdoW22hlY$a8d7408022c55362290305f3e871e57f456bb46bb5d06ef7dea3c5c079c0d942', 'admin'),
-(13, '12', 'pbkdf2:sha256:260000$iZFznX4z3NQ1GlDv$f730610793590b0adae338d4ecda2b796d22a50ddba612a0f28da8be4a3692e1', 'admin');
+(13, '12', 'pbkdf2:sha256:260000$iZFznX4z3NQ1GlDv$f730610793590b0adae338d4ecda2b796d22a50ddba612a0f28da8be4a3692e1', 'admin'),
+(14, '555', 'pbkdf2:sha256:260000$eHxVH6lYMmw0cpEn$09cccd20772665ef6b9061c116133b5db61808b9e7f335d9bb5ee8867be2ada8', 'admin');
 
 --
 -- Индексы сохранённых таблиц
@@ -148,19 +156,19 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT для таблицы `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT для таблицы `supplies`
 --
 ALTER TABLE `supplies`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT для таблицы `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- Ограничения внешнего ключа сохраненных таблиц

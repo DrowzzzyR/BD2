@@ -43,6 +43,7 @@
             <th>Product ID</th>
             <th>Quantity</th>
             <th>Supply Date</th>
+            <th>Supply Description</th>
         </tr>
     </thead>
     <tbody>
@@ -52,6 +53,7 @@
                 <td>{{ supply['product_id'] }}</td>
                 <td>{{ supply['quantity'] }}</td>
                 <td>{{ supply['price'] }}</td>
+                <td>{{ supply['description'] }}</td>
             </tr>
         {% endfor %}
     </tbody>
