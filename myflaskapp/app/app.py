@@ -6,6 +6,8 @@ from flask_sqlalchemy import SQLAlchemy
 # импортируется класс SQLAlchemy из Flask SQLAlchemy  - это расширение Flask, которое предоставляет доступ к объекту базы данных SQLAlchemy в приложении Flask
 from flask_migrate import Migrate
 # Библиотека Flask-Migrate позволяет мигрировать базы данных в приложении Flask, используя SQLAlchemy
+from flask_login import login_required
+from flask import request, flash, redirect, url_for
 
 from prometheus_client import Summary, generate_latest
 # from prometheus_client import Counter, start_http_server
@@ -44,14 +46,7 @@ from models import *
 # Чтобы flask_migrate увидел нашу модель, ее надо импортировать
 
 from auth import bp as auth_bp, init_login_manager
-# from patients import bp as patients_bp
-# from medications import bp as medications_bp
-# from medical_call_history import bp as medical_call_history_bp
-
 app.register_blueprint(auth_bp)
-# app.register_blueprint(patients_bp)
-# app.register_blueprint(medications_bp)
-# app.register_blueprint(medical_call_history_bp)
 
 init_login_manager(app)
 
@@ -64,6 +59,12 @@ def index():
 def metrics():
     return generate_latest()
 
+
+@app.route('/dashboard')
+@login_required
+def dashboard():
+    return render_template('dashboard.html')
+
 @app.route('/products')
 def products():
     products_data = Product.query.all()
@@ -71,6 +72,45 @@ def products():
     # Передача данных в шаблон и отображение страницы
     return render_template('products.html', products=products_data, supplies=supplies_data)
 
+@app.route('/add_product', methods=['POST'])
+@login_required
+def add_product():
+    if request.method == 'POST':
+        params= {
+        "name": request.form['product_name'],
+        "description": request.form['description'],
+        "price": request.form['price'],
+        }
+        try:
+            product_item = Product(**params)
+            db.session.add(product_item)
+            db.session.commit()
+            flash('Product added successfully', 'success')
+        except Exception as e:
+            db.connection.rollback()
+            flash('Error adding product: {}'.format(str(e)), 'danger')
+    return redirect(url_for('dashboard'))
+
+@app.route('/add_supply', methods=['POST'])
+@login_required
+def add_supply():
+    if request.method == 'POST':
+        product_id = request.form['product_id']
+        quantity = request.form['quantity']
+        supply_date = request.form['supply_date']
+
+        cursor = mysql.connection.cursor()
+        try:
+            cursor.execute("INSERT INTO supplies (product_id, quantity, supply_date) VALUES (%s, %s, %s)",
+                           (product_id, quantity, supply_date))
+            mysql.connection.commit()
+            flash('Supply added successfully', 'success')
+        except Exception as e:
+            mysql.connection.rollback()
+            flash('Error adding supply: {}'.format(str(e)), 'danger')
+        finally:
+            cursor.close()
+    return redirect(url_for('dashboard'))
 
 # if __name__ == '__main__':
 #     app.run(debug=True, threaded=True)

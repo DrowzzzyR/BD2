@@ -33,14 +33,10 @@
         <button type="submit">Add Supply</button>
     </form>
 
-    <!-- Ваш контент здесь -->
-
-    <!-- Пример кнопки для выхода из системы -->
-    <a href="{{ url_for('logout') }}">Logout</a>
+    <!-- <a href="{{ url_for('auth.logout') }}">Logout</a> -->
 
     <a href="{{ url_for('index') }}" class="button">Go to Main Page</a>
-    
-    <!-- Ваши скрипты здесь (если есть) -->
+
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>

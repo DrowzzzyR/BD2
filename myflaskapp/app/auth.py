@@ -43,27 +43,6 @@ def permission_check(action):
         return wrapper
     return decor
 
-from werkzeug.security import generate_password_hash
-
-# @bp.route('/register', methods=['GET', 'POST'])
-# def register():
-#     if request.method == 'POST':
-#         username = request.form.get('username')
-#         password = request.form.get('password')
-#         role = request.form.get('role')
-#         hashed_password = generate_password_hash(password)
-#         try:
-#             user = User(username=username, password_hash=hashed_password, role=role)
-#             db.session.add(user)
-#             db.session.commit()
-#             flash('Регистрация успешно завершена.', 'success')
-#             return redirect(url_for('index'))
-#         except:
-#             db.session.rollback()
-#             flash('Невозможно зарегистрироваться с указанными логином!', 'danger')
-#             return redirect(url_for('auth.register'))
-#     return render_template('register.html')
-
 @bp.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
@@ -73,7 +52,6 @@ def register():
         
         user = User(username=username, role=role)
         user.set_password(password)
-        
         try:
             db.session.add(user)
             db.session.commit()

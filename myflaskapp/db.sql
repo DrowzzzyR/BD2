@@ -2,13 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Хост: std-mysql
--- Время создания: Янв 12 2024 г., 17:59
--- Версия сервера: 5.7.26-0ubuntu0.16.04.1
--- Версия PHP: 8.1.15
-
-CREATE DATABASE db;
-use db;
+-- Хост: localhost
+-- Время создания: Янв 14 2024 г., 13:14
+-- Версия сервера: 8.2.0
+-- Версия PHP: 8.3.1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -21,8 +18,10 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- База данных: `std_1870_lr2`
+-- База данных: `db`
 --
+CREATE DATABASE IF NOT EXISTS `db` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
+USE `db`;
 
 -- --------------------------------------------------------
 
@@ -32,14 +31,14 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `alembic_version` (
   `version_num` varchar(32) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Дамп данных таблицы `alembic_version`
 --
 
 INSERT INTO `alembic_version` (`version_num`) VALUES
-('53bd602517c3');
+('3025af974662');
 
 -- --------------------------------------------------------
 
@@ -48,18 +47,18 @@ INSERT INTO `alembic_version` (`version_num`) VALUES
 --
 
 CREATE TABLE `products` (
-  `id` int(11) NOT NULL,
+  `id` int NOT NULL,
   `name` varchar(100) NOT NULL,
   `description` varchar(100) DEFAULT NULL,
-  `price` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `price` int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Дамп данных таблицы `products`
 --
 
 INSERT INTO `products` (`id`, `name`, `description`, `price`) VALUES
-(1, 'Product 1', '\'Description for Product 1', 50);
+(1, 'product', '123', 123);
 
 -- --------------------------------------------------------
 
@@ -68,18 +67,11 @@ INSERT INTO `products` (`id`, `name`, `description`, `price`) VALUES
 --
 
 CREATE TABLE `supplies` (
-  `id` int(11) NOT NULL,
-  `product_id` int(11) DEFAULT NULL,
-  `quantity` int(11) NOT NULL,
+  `id` int NOT NULL,
+  `product_id` int DEFAULT NULL,
+  `quantity` int NOT NULL,
   `price` date NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Дамп данных таблицы `supplies`
---
-
-INSERT INTO `supplies` (`id`, `product_id`, `quantity`, `price`) VALUES
-(1, 1, 100, '2024-01-01');
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -88,19 +80,23 @@ INSERT INTO `supplies` (`id`, `product_id`, `quantity`, `price`) VALUES
 --
 
 CREATE TABLE `users` (
-  `id` int(11) NOT NULL,
+  `id` int NOT NULL,
   `username` varchar(100) NOT NULL,
   `password_hash` varchar(200) NOT NULL,
   `role` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Дамп данных таблицы `users`
 --
 
 INSERT INTO `users` (`id`, `username`, `password_hash`, `role`) VALUES
-(1, 'admin', 'pbkdf2:sha256:600000$4HqGG99FfpaFm2Hw$6e2f1bc4d6a4c187aea4ff12399e2b65f1b0d9de4b566ff87102b2dd5f7b43ab', 'admin'),
-(2, 'admin1', 'pbkdf2:sha256:600000$Ckfmk4j7EbUxl6ji$501653a641624f6fefc908978abdcacf1e49b306e413f4ef9a093237824bb111', 'admin');
+(7, '123', 'pbkdf2:sha256:260000$3kGKvpjNEyz0di0F$7ea990b660d03caddc82c05534af4b391e1d73ae56d27b17da387eea80c3b054', 'admin'),
+(9, '1234', 'pbkdf2:sha256:260000$uwbEK496AgvCX1ur$24eeaae42da7b354bf6bdae8f20d36d6e73f78d50f512964eff9fec861356e05', 'admin'),
+(10, 'admin1', 'pbkdf2:sha256:260000$uzGYeURCoTrFWoTk$49a52baedec5a0d81e58f656f93b4141c2df550b61a7a7e541862ccb5d6f38f9', 'admin'),
+(11, 'admin1w2', 'pbkdf2:sha256:260000$svDCj1advJJK4lpz$fba0859a55a14c832a62682b07720ca007f990c6f2073ef4f3b83205ebc033a0', 'admin'),
+(12, '1233453521152', 'pbkdf2:sha256:260000$tXm9hexAdoW22hlY$a8d7408022c55362290305f3e871e57f456bb46bb5d06ef7dea3c5c079c0d942', 'admin'),
+(13, '12', 'pbkdf2:sha256:260000$iZFznX4z3NQ1GlDv$f730610793590b0adae338d4ecda2b796d22a50ddba612a0f28da8be4a3692e1', 'admin');
 
 --
 -- Индексы сохранённых таблиц
@@ -140,19 +136,19 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT для таблицы `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT для таблицы `supplies`
 --
 ALTER TABLE `supplies`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT для таблицы `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- Ограничения внешнего ключа сохраненных таблиц
