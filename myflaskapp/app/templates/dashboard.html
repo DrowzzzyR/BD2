@@ -10,7 +10,15 @@
 </head>
 <body>
     <h1>Welcome to the Dashboard</h1>
-
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <ul>
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    {% endwith %}
     <h2>Manage Products</h2>
     <form action="{{ url_for('add_product') }}" method="post">
         <label for="product_name">Product Name:</label>
@@ -21,7 +29,6 @@
         <input type="number" name="price" required>
         <button type="submit">Add Product</button>
     </form>
-
     <h2>Manage Supplies</h2>
     <form action="{{ url_for('add_supply') }}" method="post">
         <label for="product_id">Product ID:</label>

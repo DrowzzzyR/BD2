@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: localhost
--- Время создания: Янв 14 2024 г., 13:14
+-- Время создания: Янв 14 2024 г., 13:31
 -- Версия сервера: 8.2.0
 -- Версия PHP: 8.3.1
 
@@ -58,7 +58,9 @@ CREATE TABLE `products` (
 --
 
 INSERT INTO `products` (`id`, `name`, `description`, `price`) VALUES
-(1, 'product', '123', 123);
+(1, 'product', '123', 123),
+(2, 'product123', '456', 789),
+(3, 'product12', '12', 12);
 
 -- --------------------------------------------------------
 
@@ -72,6 +74,16 @@ CREATE TABLE `supplies` (
   `quantity` int NOT NULL,
   `price` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Дамп данных таблицы `supplies`
+--
+
+INSERT INTO `supplies` (`id`, `product_id`, `quantity`, `price`) VALUES
+(1, 1, 123, '2024-01-03'),
+(2, 2, 6000, '2024-01-13'),
+(3, 2, 5000, '2024-01-04'),
+(4, 3, 1000000, '2024-01-05');
 
 -- --------------------------------------------------------
 
@@ -136,13 +148,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT для таблицы `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT для таблицы `supplies`
 --
 ALTER TABLE `supplies`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT для таблицы `users`

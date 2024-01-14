@@ -91,6 +91,8 @@ def add_product():
             flash('Error adding product: {}'.format(str(e)), 'danger')
     return redirect(url_for('dashboard'))
 
+from datetime import datetime
+
 @app.route('/add_supply', methods=['POST'])
 @login_required
 def add_supply():
@@ -99,17 +101,14 @@ def add_supply():
         quantity = request.form['quantity']
         supply_date = request.form['supply_date']
 
-        cursor = mysql.connection.cursor()
         try:
-            cursor.execute("INSERT INTO supplies (product_id, quantity, supply_date) VALUES (%s, %s, %s)",
-                           (product_id, quantity, supply_date))
-            mysql.connection.commit()
+            supply_item = Supply(product_id=product_id, quantity=quantity, price=supply_date)
+            db.session.add(supply_item)
+            db.session.commit()
             flash('Supply added successfully', 'success')
         except Exception as e:
-            mysql.connection.rollback()
+            db.session.rollback()
             flash('Error adding supply: {}'.format(str(e)), 'danger')
-        finally:
-            cursor.close()
     return redirect(url_for('dashboard'))
 
 # if __name__ == '__main__':
