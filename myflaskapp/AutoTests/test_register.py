@@ -17,8 +17,8 @@ def register(driver):
             EC.visibility_of_element_located((By.XPATH, "/html/body/form/input[2]"))
         )
 
-        login = '33344'
-        password = '33344'
+        login = 'test_user'
+        password = 'test_pass'
 
         data = {
             'login': login,
