@@ -12,9 +12,7 @@ services:
       network:
         ipv4_address: 192.168.1.2
   app:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: drowzzzy/app2
     networks:
       network:
         ipv4_address: 192.168.1.3
