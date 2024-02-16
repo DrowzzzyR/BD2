@@ -17,7 +17,7 @@ def test_main():
    driver.maximize_window()
    driver.implicitly_wait(60)
    
-   driver.get("http://localhost:5000/")
+   driver.get("http://192.168.1.2:8000/")
 
    result_register = register(driver=driver)
    assert result_register == True, "Ошибка регистрации."
